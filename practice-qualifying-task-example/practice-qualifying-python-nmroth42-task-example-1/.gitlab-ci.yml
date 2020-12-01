@@ -1,0 +1,34 @@
+image: alpine:latest
+
+before_script:
+  - chmod +x ./test.sh
+  - apk add --update --no-cache git openssh sshpass py-pip python3-dev curl
+  - apk update && apk add bash
+  - python3 --version
+
+stages:
+  - test_git_task
+  - test_algo_problems
+
+test_git_task:
+  stage: test_git_task
+  only:
+    - issue-1
+  script:
+  - ./test.sh
+
+test_algo_problems:
+  stage: test_algo_problems
+  script:
+  - echo $CI_COMMIT_REF_SLUG
+  - git clone -b $CI_COMMIT_REF_SLUG https://$DEPLOY_TOKEN_USERNAME:$DEPLOY_TOKEN_PASSWORD_PYTHON@gitlab.com/sibdevstudio/public/practice-algorithm-tests-python.git
+  - python3 -m unittest practice-algorithm-tests-python/tests.py
+  only:
+  - issue-2
+  - issue-3
+  - issue-4
+  - issue-5
+  - issue-6
+  - issue-7
+  - issue-8
+  - issue-9
